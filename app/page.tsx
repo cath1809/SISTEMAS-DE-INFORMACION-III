@@ -30,6 +30,12 @@ export default function HomePage() {
         >
           Empezar gratis
         </button>
+         <button 
+          onClick={() => router.push('./sesion')} 
+          className="bg-[#2e5bff] text-white px-6 py-2 rounded-lg font-bold hover:opacity-90 transition-all active:scale-95 shadow-[0_0_20px_rgba(46,91,255,0.3)] font-sora"
+        >
+          Iniciar Sesión
+        </button>
       </Header>
   
       <main>

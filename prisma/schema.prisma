@@ -1,13 +1,43 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String               @id @default(uuid())
+  name      String
+  email     String               @unique
+  password  String
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  tokens    PasswordResetToken[]
+  progress ModuleProgress[] // Nueva relación
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  code      String   @unique // Aquí se guardará el código de 6 dígitos (ej. "529413")
+  expiresAt DateTime // Tiempo de expiración corto (10 minutos)
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ModuleProgress {
+  id          String   @id @default(uuid())
+  moduleId    Int      // Para saber si es el módulo 1, 2, 3 o 4
+  progressPct Int      @default(0) // Porcentaje del 0 al 100
+  isCompleted Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Esta regla evita que un usuario tenga dos progresos duplicados para el mismo módulo
+  @@unique([userId, moduleId]) 
 }

@@ -6,6 +6,7 @@ import { useState } from "react";
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null); // Nuevo estado para manejar errores
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,28 +26,37 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null); // Limpiamos cualquier error previo al intentar de nuevo
 
     try {
-      // AQUÍ IRÁ TU ENDPOINT CUANDO LO TENGAS
-      /*
-      const response = await fetch('/api/auth/register', {
+      // Llamada real al endpoint que creaste
+      const response = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        // Enviamos solo los datos que el backend espera (omitiendo 'terms')
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        })
       });
-      
-      if (!response.ok) throw new Error('Error en el registro');
+
       const data = await response.json();
-      console.log('Registro exitoso', data);
-      */
+
+      // Si la respuesta no es OK (ej. 400 o 409), lanzamos un error con el mensaje del backend
+      if (!response.ok) {
+        throw new Error(data.error || 'Ocurrió un error al registrar el usuario');
+      }
+
+      console.log("¡Registro exitoso!", data);
       
-      console.log("Datos listos para enviar al endpoint:", formData);
-      // Simulación de delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Redireccionamos al panel principal tras el éxito
+      router.push('/sesion');
       
-      router.push('/mainPanel');
-    } catch (error) {
-      console.error("Error al registrar:", error);
+    } catch (err: any) {
+      console.error("Error al registrar:", err);
+      // Guardamos el mensaje de error para mostrarlo en la interfaz
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -77,46 +87,21 @@ export default function RegisterPage() {
               descubrir en pequeñas ráfagas de curiosidad."
             </p>
             <div className="mt-[64px] flex justify-center gap-[24px] opacity-70">
+              {/* SVGs Iconos... (Mantenidos igual) */}
               <span className="text-4xl">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  viewBox="0 -960 960 960" 
-                  fill="currentColor" 
-                  className="text-[#a64aff] w-[32px] h-[32px]"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" className="text-[#a64aff] w-[32px] h-[32px]">
                   <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm120-60 56-56-84-84 84-84-56-56-140 140 140 140Zm160-20v80h240v-80H440Z"/>
                 </svg>
               </span>
               <span className="text-4xl">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="text-[#7cb300]"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" className="text-[#7cb300]">
                   <path d="M3 3h18v18H3V3zm11.749 14.332c1.037 0 1.705-.443 2.115-1.07l-1.423-1.011c-.305.419-.661.644-1.168.644-.543 0-.965-.296-.965-.913 0-.613.578-.85 1.25-.992l.836-.17c1.472-.296 2.39-1.015 2.39-2.38 0-1.464-1.121-2.45-2.718-2.45-1.398 0-2.355.602-2.824 1.536l1.41 1.012c.28-.52.66-.81 1.233-.81.442 0 .809.238.809.704 0 .542-.486.723-1.137.856l-.887.186c-1.558.332-2.476 1.066-2.476 2.458 0 1.547 1.156 2.406 2.73 2.406zm-4.707-.156c.746 0 1.332-.234 1.684-.71l-1.422-1.028c-.187.278-.445.41-.75.41-.492 0-.809-.281-.809-.855V9.453h-1.895v5.336c0 1.562.977 2.379 2.41 2.379-.001.004.782.004.782.004z" />
                 </svg>
               </span>
               <span className="text-4xl">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-[#8e90a2] hover:text-[#2e5bff] hover:drop-shadow-[0_0_12px_rgba(46,91,255,0.4)] transition-all duration-300 cursor-pointer"
-                >
-                  {/* Disco superior */}
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#8e90a2] hover:text-[#2e5bff] hover:drop-shadow-[0_0_12px_rgba(46,91,255,0.4)] transition-all duration-300 cursor-pointer">
                   <ellipse cx="12" cy="5" rx="9" ry="3" />
-                  {/* Línea divisoria central */}
                   <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-                  {/* Cuerpo del cilindro y base */}
                   <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
                 </svg>
               </span>
@@ -138,6 +123,13 @@ export default function RegisterPage() {
                 Empieza tu viaje hacia la maestría técnica hoy mismo.
               </p>
             </div>
+
+            {/* Renderizado condicional del mensaje de error */}
+            {error && (
+              <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
+                {error}
+              </div>
+            )}
 
             {/* Main Form */}
             <form onSubmit={handleSubmit} className="space-y-[24px]">
@@ -201,45 +193,10 @@ export default function RegisterPage() {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     <span className="text-xl">
-                      {showPassword ? <svg
-  xmlns="http://www.w3.org/2000/svg"
-  width="1em"
-  height="1em"
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
-  strokeWidth="2"
-  strokeLinecap="round"
-  strokeLinejoin="round"
->
-  {/* Pupila parcial */}
-  <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
-  {/* Arco superior parcial */}
-  <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
-  {/* Arco inferior parcial */}
-  <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
-  {/* Línea diagonal de tachado */}
-  <line x1="2" y1="2" x2="22" y2="22" />
-</svg> : <svg
-  xmlns="http://www.w3.org/2000/svg"
-  width="1em"
-  height="1em"
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
-  strokeWidth="2"
-  strokeLinecap="round"
-  strokeLinejoin="round"
->
-  {/* Forma del ojo */}
-  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-  {/* Pupila */}
-  <circle cx="12" cy="12" r="3" />
-</svg>}
+                      {showPassword ? <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" /><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" /><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" /><line x1="2" y1="2" x2="22" y2="22" /></svg> : <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>}
                     </span>
                   </button>
                 </div>
-               
               </div>
 
               <div className="flex items-start gap-3 pt-[4px]">
