@@ -39,14 +39,11 @@ export default function SesionPage() {
       
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al iniciar sesión');
-      }
-      // ¡ESTA ES LA LÍNEA VITAL QUE FALTA!
-  localStorage.setItem('userEmail', formData.loginEmail);
-      console.log('Login exitoso', data);
-      
-      localStorage.setItem('nanoCodeUser', JSON.stringify(data.user));
+      if (!response.ok)  return setError("Credenciales Inválidas");
+      localStorage.setItem('userEmail', formData.loginEmail);
+      localStorage.setItem('userName', data.user.name); // <-- Agrega esta línea clave
+      localStorage.setItem('userRole', data.user.role);
+      localStorage.setItem('userCedula', data.user.cedula);
       
       router.push('/mainPanel');
       

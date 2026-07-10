@@ -8,15 +8,24 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// 1. Definimos los roles permitidos
+enum Role {
+  USER   // Representa al estudiante o usuario normal
+  ADMIN  // Representa al administrador
+}
+
 model User {
-  id        String               @id @default(uuid())
-  name      String
-  email     String               @unique
-  password  String
-  createdAt DateTime             @default(now())
-  updatedAt DateTime             @updatedAt
-  tokens    PasswordResetToken[]
-  progress ModuleProgress[] // Nueva relación
+  id         String               @id @default(uuid())
+  name       String
+  email      String               @unique
+  cedula     String               @unique // <-- Nuevo campo agregado como obligatorio y único
+  password   String
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+  tokens     PasswordResetToken[]
+  progress   ModuleProgress[] // Nueva relación
+  // 2. Agregamos el campo de rol con el valor por defecto
+  role       Role                 @default(USER)
 }
 
 model PasswordResetToken {

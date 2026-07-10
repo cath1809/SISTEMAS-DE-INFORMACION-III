@@ -14,6 +14,7 @@ export default function Dashboard() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [progressData, setProgressData] = useState<ModuleProgress[]>([]);
   const [userName, setUserName] = useState("Estudiante");
+  const [userRole, setUserRole] = useState<string | null>(null); // <-- 1. Nuevo estado para el rol
   const router = useRouter();
 
   // Efecto visual del mouse
@@ -28,7 +29,9 @@ export default function Dashboard() {
   // 1. Cargar el progreso desde la Base de Datos
   useEffect(() => {
     const fetchProgress = async () => {
-      const email = typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null;
+      let email = typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null;
+      let name = typeof window !== 'undefined' ? localStorage.getItem('userName') : null;
+      let role = typeof window !== 'undefined' ? localStorage.getItem('userRole') : null; // <-- 2. Leer el rol
       
       if (!email) {
         // Si no hay correo, lo devolvemos al inicio de sesión
@@ -36,9 +39,19 @@ export default function Dashboard() {
         return;
       }
       
-      // Formatear el nombre (ej. maria@gmail.com -> Maria)
-      const name = email.split('@')[0];
-      setUserName(name.charAt(0).toUpperCase() + name.slice(1));
+      // Limpieza preventiva por si se guardó la palabra "undefined"
+      if (name === "undefined" || name === "null") name = null;
+      if (role === "undefined" || role === "null") role = null;
+      
+      // Asignar los valores a los estados
+      setUserRole(role);
+      
+      if (name) {
+        setUserName(name);
+      } else {
+        const fallbackName = email.split('@')[0];
+        setUserName(fallbackName.charAt(0).toUpperCase() + fallbackName.slice(1));
+      }
 
       try {
         const res = await fetch(`/api/progress?email=${email}`);
@@ -91,6 +104,8 @@ export default function Dashboard() {
   // Cerrar sesión
   const handleLogout = () => {
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userRole'); // Asegúrate de limpiar todo
     router.push('/sesion');
   };
 
@@ -136,14 +151,17 @@ export default function Dashboard() {
             <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" /></svg></span>
             <span>Cursos</span>
           </a>
-          <a href="#" className="text-[#434656] flex items-center gap-[8px] px-[12px] py-[8px] hover:bg-[#2e5bff]/10 hover:text-[#2e5bff] rounded-xl active:translate-x-1 transition-all">
-            <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg></span>
-            <span>Práctica</span>
-          </a>
-          <a href="#" className="text-[#434656] flex items-center gap-[8px] px-[12px] py-[8px] hover:bg-[#2e5bff]/10 hover:text-[#2e5bff] rounded-xl active:translate-x-1 transition-all">
-            <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg></span>
-            <span>Perfil</span>
-          </a>
+        
+       
+          {/* 3. Renderizado condicional del enlace de Usuarios Registrados */}
+          
+          {userRole === 'ADMIN' && (
+            <a href="/usersRegister" className="text-[#434656] flex items-center gap-[8px] px-[12px] py-[8px] hover:bg-[#2e5bff]/10 hover:text-[#2e5bff] rounded-xl active:translate-x-1 transition-all">
+              <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg></span>
+              <span>Usuarios Registrados</span>
+            </a>
+          )}
+
         </nav>
         
         <div className="mt-auto flex flex-col gap-[12px]">
@@ -216,37 +234,7 @@ export default function Dashboard() {
           </div>
 
           {/* Daily Challenge */}
-          <div 
-            onMouseMove={handleMouseMove}
-            className="md:col-span-12 p-[24px] rounded-xl flex flex-col md:flex-row items-center gap-[24px] bg-gradient-to-br from-[#fbfdff] to-[#eef2fc] border border-[#2e5bff]/20 shadow-sm"
-            style={{ '--mouse-x': `${mousePos.x}px`, '--mouse-y': `${mousePos.y}px` } as React.CSSProperties}
-          >
-            <div className="flex-grow space-y-[12px]">
-              <div className="flex items-center gap-[8px]">
-                <span className="text-[#7cb300]"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" className="w-[18px] h-[18px]"><path d="m320-80 40-280H200l240-520h200l-40 280h160L520-80H320Z"/></svg></span></span>
-                <h3 className="text-[20px] leading-[28px] font-semibold text-[#0b1326]">
-                  Reto Diario: 5 Minutos
-                </h3>
-              </div>
-              <p className="text-[#434656]">
-                Optimiza esta función de flecha para mejorar el tiempo de ejecución en arreglos grandes.
-              </p>
-              
-              {/* Code Block */}
-              <div className="bg-white p-[12px] rounded-lg border border-[#171f33]/10 text-[13px] leading-[20px] font-mono overflow-x-auto shadow-sm">
-                <code className="text-[#2e5bff]">
-                  <span className="text-[#a64aff]">const</span>{' '}
-                  <span className="text-[#2e5bff]">optimize</span> = (arr) ={'>'} {'{\n'}
-                  <span className="text-[#8e90a2]">  // Tu código aquí...</span>
-                  {'\n}'};
-                </code>
-              </div>
-            </div>
-            <button className="shrink-0 bg-[#7cb300] text-white py-[12px] px-[32px] rounded-xl font-extrabold text-[16px] md:text-[18px] hover:scale-105 active:scale-95 transition-all shadow-[0_4px_15px_rgba(124,179,0,0.3)]">
-              RESOLVER AHORA
-            </button>
-          </div>
-
+        
           {/* Renderizado Dinámico del Temario (Módulos 1 al 4) */}
           <section className="md:col-span-12 space-y-[24px]">
             <div className="flex justify-between items-center mt-[24px]">
@@ -281,12 +269,13 @@ export default function Dashboard() {
                   labelColor = "text-[#2e5bff]";
                 } else {
                   // BLOQUEADO
-                  cardStyle = "opacity-60 grayscale bg-[#f4f7ff] border-[#171f33]/10 cursor-not-allowed";
+                  // LÓGICA AGREGADA: Si es ADMIN, cambiamos el cursor y permitimos el acceso
+                  cardStyle = `opacity-60 grayscale bg-[#f4f7ff] border-[#171f33]/10 ${userRole === 'ADMIN' ? 'cursor-pointer hover:shadow-sm' : 'cursor-not-allowed'}`;
                   iconColor = "text-[#8e90a2]";
                   iconSvg = LockIcon;
-                  labelText = "BLOQUEADO";
+                  labelText = userRole === 'ADMIN' ? "BLOQUEADO (ACCESO ADMIN)" : "BLOQUEADO";
                   labelColor = "text-[#8e90a2]";
-                  isClickable = false;
+                  isClickable = userRole === 'ADMIN'; // <-- Aquí está la validación
                 }
 
                 return (
@@ -333,10 +322,7 @@ export default function Dashboard() {
           <span>[icono grupos]</span>
           <span className="text-[10px] tracking-[0.1em] font-bold mt-[4px]">COMUNIDAD</span>
         </a>
-        <a href="#" className="flex flex-col items-center text-[#8e90a2] active:bg-[#2e5bff]/10 hover:text-[#2e5bff] transition-all p-[4px] rounded-lg">
-          <span>[icono perfil]</span>
-          <span className="text-[10px] tracking-[0.1em] font-bold mt-[4px]">PERFIL</span>
-        </a>
+      
       </nav>
       
     </div>

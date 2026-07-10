@@ -6,9 +6,10 @@ import { useState } from "react";
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null); // Nuevo estado para manejar errores
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
+    cedula: "", // <-- Agregado al estado inicial
     email: "",
     password: "",
     terms: false,
@@ -26,16 +27,15 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null); // Limpiamos cualquier error previo al intentar de nuevo
+    setError(null);
 
     try {
-      // Llamada real al endpoint que creaste
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // Enviamos solo los datos que el backend espera (omitiendo 'terms')
         body: JSON.stringify({
           name: formData.name,
+          cedula: formData.cedula, // <-- Agregado a la carga útil del backend
           email: formData.email,
           password: formData.password,
         })
@@ -43,19 +43,16 @@ export default function RegisterPage() {
 
       const data = await response.json();
 
-      // Si la respuesta no es OK (ej. 400 o 409), lanzamos un error con el mensaje del backend
       if (!response.ok) {
         throw new Error(data.error || 'Ocurrió un error al registrar el usuario');
       }
 
       console.log("¡Registro exitoso!", data);
       
-      // Redireccionamos al panel principal tras el éxito
       router.push('/sesion');
       
     } catch (err: any) {
       console.error("Error al registrar:", err);
-      // Guardamos el mensaje de error para mostrarlo en la interfaz
       setError(err.message);
     } finally {
       setLoading(false);
@@ -87,7 +84,7 @@ export default function RegisterPage() {
               descubrir en pequeñas ráfagas de curiosidad."
             </p>
             <div className="mt-[64px] flex justify-center gap-[24px] opacity-70">
-              {/* SVGs Iconos... (Mantenidos igual) */}
+              {/* SVGs Iconos */}
               <span className="text-4xl">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" className="text-[#a64aff] w-[32px] h-[32px]">
                   <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm120-60 56-56-84-84 84-84-56-56-140 140 140 140Zm160-20v80h240v-80H440Z"/>
@@ -124,7 +121,6 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            {/* Renderizado condicional del mensaje de error */}
             {error && (
               <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
                 {error}
@@ -151,6 +147,27 @@ export default function RegisterPage() {
                   />
                 </div>
               </div>
+
+              {/* NUEVO CAMPO: CÉDULA */}
+              <div className="space-y-[4px]">
+                <label className="text-xs font-bold tracking-[0.1em] uppercase text-[#434656]" htmlFor="cedula">
+                  CÉDULA
+                </label>
+                <div className="relative focus-within:scale-[1.01] transition-transform duration-200">
+                  <input
+                    className="w-full bg-[#fbfdff] border border-[#171f33]/10 text-[#0b1326] rounded-lg p-3 focus:ring-2 focus:ring-[#2e5bff]/50 focus:border-[#2e5bff] outline-none transition-all placeholder:text-[#8e90a2]"
+                    id="cedula"
+                    name="cedula"
+                    value={formData.cedula}
+                    onChange={handleChange}
+                    placeholder="Ej. 12345678"
+                    required
+                    type="text"
+                    autoComplete="off"
+                  />
+                </div>
+              </div>
+              {/* FIN NUEVO CAMPO */}
 
               <div className="space-y-[4px]">
                 <label className="text-xs font-bold tracking-[0.1em] uppercase text-[#434656]" htmlFor="email">

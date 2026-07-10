@@ -10,10 +10,16 @@ export default function LessonOne() {
   const [q2, setQ2] = useState<{ val: string; status: 'idle' | 'correct' | 'incorrect' }>({ val: '', status: 'idle' });
   const [q3, setQ3] = useState<{ val: string; status: 'idle' | 'correct' | 'incorrect' }>({ val: '', status: 'idle' });
   const [q4, setQ4] = useState<{ val: string; status: 'idle' | 'correct' | 'incorrect' }>({ val: '', status: 'idle' });
+  
+  // NUEVO: Estado para verificar el rol del usuario
+  const [userRole, setUserRole] = useState<string | null>(null);
 
-  // 1. RECUPERAR RESPUESTAS AL CARGAR LA PÁGINA
+  // 1. RECUPERAR RESPUESTAS Y ROL AL CARGAR LA PÁGINA
   useEffect(() => {
     const userEmail = typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null;
+    const role = typeof window !== 'undefined' ? localStorage.getItem('userRole') : null; // Recuperamos el rol
+    
+    if (role) setUserRole(role);
     if (!userEmail) return;
 
     // Buscamos si este usuario ya tiene respuestas guardadas para el módulo 1
@@ -64,6 +70,10 @@ export default function LessonOne() {
     const isCorrect = normalized === "constcurso='NanoCode'";
     setQ4(prev => ({ ...prev, status: isCorrect ? 'correct' : 'incorrect' }));
   };
+
+  // NUEVO: Lógica combinada para saber si todo está correcto y si puede continuar
+  const isAllCorrect = q1.status === 'correct' && q2.status === 'correct' && q3.status === 'correct' && q4.status === 'correct';
+  const canProceed = isAllCorrect || userRole === 'ADMIN';
 
   // Calcular el progreso dinámico (0 a 100)
   const calculateProgress = () => {
@@ -212,7 +222,6 @@ export default function LessonOne() {
           <div className="max-w-[1000px] mx-auto w-full flex flex-col h-full gap-[24px] relative z-10">
             <div className="flex items-center justify-between mb-[12px]">
               <h2 className="text-[24px] leading-[32px] font-semibold text-[#0b1326] flex items-center gap-[12px]">
-               
                 Comprueba tu Entendimiento
               </h2>
               <span className="bg-[#2e5bff]/10 border border-[#2e5bff]/20 text-[#2e5bff] px-[12px] py-[4px] rounded-full text-[12px] tracking-[0.1em] font-bold uppercase">
@@ -381,17 +390,23 @@ export default function LessonOne() {
 
             </div>
             
-            {/* CTA Actions */}
+            {/* CTA Actions MODIFICADO */}
             <div className="mt-auto flex justify-end items-center gap-[24px] pt-[12px] border-t border-[#171f33]/10">
               <Link 
-                href="/mainPanel"
+                href={canProceed ? "/module2" : "#"}
+                onClick={(e) => {
+                  // Si no está todo correcto y no es admin, bloqueamos el clic
+                  if (!canProceed) e.preventDefault();
+                }}
                 className={`text-white font-semibold text-[14px] py-[12px] px-[40px] rounded-lg flex items-center justify-center gap-[8px] transition-all ${
-                  (q1.status === 'correct' && q2.status === 'correct' && q3.status === 'correct' && q4.status === 'correct') 
+                  isAllCorrect 
                   ? 'bg-[#7cb300] hover:shadow-[0_4px_15px_rgba(124,179,0,0.4)] hover:-translate-y-1' 
-                  : 'bg-[#2e5bff] hover:shadow-[0_4px_15px_rgba(46,91,255,0.3)] hover:-translate-y-1'
+                  : canProceed
+                    ? 'bg-[#2e5bff] hover:shadow-[0_4px_15px_rgba(46,91,255,0.3)] hover:-translate-y-1'
+                    : 'bg-[#2e5bff] opacity-50 cursor-not-allowed pointer-events-none'
                 }`}
               >
-                {(q1.status === 'correct' && q2.status === 'correct' && q3.status === 'correct' && q4.status === 'correct') ? "¡Lección Completada!" : "Continuar al siguiente módulo"}
+                {isAllCorrect ? "¡Lección Completada!" : "Continuar al siguiente módulo"}
                 <span className="text-[18px]">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />

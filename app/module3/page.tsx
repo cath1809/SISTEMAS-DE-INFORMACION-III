@@ -10,9 +10,16 @@ export default function LessonThree() {
   const [q3, setQ3] = useState<{ val: string; status: 'idle' | 'correct' | 'incorrect' }>({ val: '', status: 'idle' });
   const [q4, setQ4] = useState<{ val: string; status: 'idle' | 'correct' | 'incorrect' }>({ val: '', status: 'idle' });
 
+  // NUEVO: Estado para verificar el rol del usuario
+  const [userRole, setUserRole] = useState<string | null>(null);
+
   useEffect(() => {
     const userEmail = typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null;
+    const role = typeof window !== 'undefined' ? localStorage.getItem('userRole') : null; // Recuperamos el rol
+    
+    if (role) setUserRole(role);
     if (!userEmail) return;
+    
     const cachedAnswers = localStorage.getItem(`mod3_answers_${userEmail}`);
     if (cachedAnswers) {
       const parsed = JSON.parse(cachedAnswers);
@@ -56,6 +63,10 @@ export default function LessonThree() {
     const isCorrect = normalized === "constres=awaitfetch('/api/data')";
     setQ4(prev => ({ ...prev, status: isCorrect ? 'correct' : 'incorrect' }));
   };
+
+  // NUEVO: Lógica combinada para saber si todo está correcto y si puede continuar
+  const isAllCorrect = q1.status === 'correct' && q2.status === 'correct' && q3.status === 'correct' && q4.status === 'correct';
+  const canProceed = isAllCorrect || userRole === 'ADMIN';
 
   const calculateProgress = () => {
     let correctCount = 0;
@@ -317,16 +328,45 @@ export default function LessonThree() {
 
             </div>
             
-            <div className="mt-auto flex justify-end pt-6 border-t border-[#171f33]/10">
+            {/* CTA Actions MODIFICADO */}
+            <div className="mt-auto flex justify-between items-center pt-6 border-t border-[#171f33]/10">
+              {/* Botón para regresar al módulo anterior (Módulo 2) */}
               <Link 
-                href="/mainPanel"
-                className={`py-3 px-12 rounded-xl text-white font-bold transition-all shadow-md ${
-                  currentProgress === 100 
-                  ? 'bg-[#7cb300] hover:scale-105' 
-                  : 'bg-[#2e5bff] hover:bg-[#2e5bff]/90'
+                href="/module2" 
+                className="py-[12px] px-[24px] md:px-[40px] rounded-xl text-[#434656] bg-[#f4f7ff] border border-[#171f33]/10 font-semibold text-[14px] flex items-center justify-center gap-[8px] transition-all hover:bg-[#eef2fc] hover:text-[#2e5bff]"
+              >
+                <span className="text-[18px]">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75" />
+                  </svg>
+                </span>
+                <span className="hidden md:inline">Regresar al módulo anterior</span>
+                <span className="md:hidden">Atrás</span>
+              </Link>
+
+              {/* Botón para continuar al siguiente módulo (Módulo 4) */}
+              <Link 
+                href={canProceed ? "/module4" : "#"}
+                onClick={(e) => {
+                  if (!canProceed) e.preventDefault();
+                }}
+                className={`text-white font-semibold text-[14px] py-[12px] px-[24px] md:px-[40px] rounded-xl flex items-center justify-center gap-[8px] transition-all shadow-md ${
+                  isAllCorrect 
+                  ? 'bg-[#7cb300] hover:scale-105 hover:shadow-[0_4px_15px_rgba(124,179,0,0.4)]' 
+                  : canProceed
+                    ? 'bg-[#2e5bff] hover:bg-[#2e5bff]/90 hover:scale-105'
+                    : 'bg-[#2e5bff] opacity-50 cursor-not-allowed pointer-events-none'
                 }`}
               >
-                {currentProgress === 100 ? "¡Módulo Completado!" : "Regresar al Panel"}
+                <span className="hidden md:inline">
+                  {isAllCorrect ? "¡Lección Completada!" : "Continuar al siguiente módulo"}
+                </span>
+                <span className="md:hidden">Siguiente</span>
+                <span className="text-[18px]">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+                  </svg>
+                </span>
               </Link>
             </div>
           </div>
@@ -342,6 +382,10 @@ export default function LessonThree() {
         <Link href="#" className="flex flex-col items-center text-[#8e90a2] active:bg-[#2e5bff]/10 p-[4px] rounded-lg transition-transform hover:text-[#2e5bff]">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           <span className="text-[10px] tracking-[0.1em] font-bold uppercase mt-1">Práctica</span>
+        </Link>
+        <Link href="#" className="flex flex-col items-center text-[#8e90a2] active:bg-[#2e5bff]/10 p-[4px] rounded-lg transition-transform hover:text-[#2e5bff]">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
+          <span className="text-[10px] tracking-[0.1em] font-bold uppercase mt-1">Comunidad</span>
         </Link>
         <Link href="#" className="flex flex-col items-center text-[#8e90a2] active:bg-[#2e5bff]/10 p-[4px] rounded-lg transition-transform hover:text-[#2e5bff]">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>

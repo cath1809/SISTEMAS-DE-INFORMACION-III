@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   try {
     // 1. Extraer los datos que envía tu formulario
     const body = await request.json();
-    const { name, email, password } = body;
+    const { name, email, password , cedula} = body;
 
     // 2. Validación básica de que no vengan vacíos
     if (!name || !email || !password) {
@@ -38,6 +38,7 @@ export async function POST(request: Request) {
       data: {
         name,
         email,
+        cedula, // <-- Añadir estocedula, // <-- Añadir esto
         password: hashedPassword,
       },
     });
