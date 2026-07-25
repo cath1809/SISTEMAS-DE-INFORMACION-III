@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 export default function ResetPasswordPage() {
@@ -10,18 +10,23 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  // 1. Creamos un estado para guardar el token
+  const [token, setToken] = useState<string | null>(null);
   
-  // Extraemos el token directamente de la URL (?token=...)
-  const token = searchParams.get("token");
+  const router = useRouter();
 
+  // 2. Usamos JavaScript puro para leer la URL solo en el navegador
   useEffect(() => {
-    // Si alguien intenta entrar a esta página sin un token en la URL, bloqueamos el acceso
-    if (!token) {
+    // window.location.search extrae todo lo que está después del "?" en la URL
+    const params = new URLSearchParams(window.location.search);
+    const urlToken = params.get("token");
+
+    if (urlToken) {
+      setToken(urlToken);
+    } else {
       setError("Falta el token de recuperación. El enlace no es válido.");
     }
-  }, [token]);
+  }, []); // El array vacío asegura que esto solo corra una vez al cargar la página
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
