@@ -153,6 +153,7 @@ export default function Dashboard() {
           </a>
         
        
+       
           {/* 3. Renderizado condicional del enlace de Usuarios Registrados */}
           
           {userRole === 'ADMIN' && (
@@ -162,6 +163,13 @@ export default function Dashboard() {
             </a>
           )}
 
+
+          {userRole === 'ADMIN' && (
+             <a href="/getCertificate" className="text-[#434656] flex items-center gap-[8px] px-[12px] py-[8px] hover:bg-[#2e5bff]/10 hover:text-[#2e5bff] rounded-xl active:translate-x-1 transition-all">
+            <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg></span>
+            <span>Certificados</span>
+          </a>
+          )}
         </nav>
         
         <div className="mt-auto flex flex-col gap-[12px]">
@@ -225,9 +233,6 @@ export default function Dashboard() {
                   className="bg-[#2e5bff] text-white py-[10px] px-[24px] rounded-xl font-bold flex items-center gap-[8px] hover:shadow-[0_4px_15px_rgba(46,91,255,0.3)] transition-all active:scale-95"
                 >
                   Continuar lección <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 20.007c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" /></svg></span>
-                </button>
-                <button className="bg-[#f4f7ff] text-[#2e5bff] py-[10px] px-[24px] rounded-xl font-medium border border-[#2e5bff]/20 hover:bg-[#eef2fc] transition-all">
-                  Ver temario
                 </button>
               </div>
             </div>

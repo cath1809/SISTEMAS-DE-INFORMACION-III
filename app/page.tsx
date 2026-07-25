@@ -128,22 +128,23 @@ export default function HomePage() {
               </div>
 
               {/* Racha de Éxito */}
-              <div className="bg-white border border-[#171f33]/10 shadow-sm p-8 rounded-xl group hover:border-[#7cb300]/40 hover:shadow-md transition-all duration-300">
-                <div className="w-12 h-12 bg-[#7cb300]/10 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    viewBox="0 -960 960 960" 
-                    fill="currentColor" 
-                    className="text-[#7cb300] w-[32px] h-[32px]"
-                  >
-                    <path d="M480-80q-106 0-192-56.5T151-290q-13-21-2-43.5t35-22.5q114-16 182.5-101.5T435-654q4-11 13-18.5t20-9.5q13-2 23.5 4.5T505-658q19 50 63 125t116 151q64 67 90 128t26 126q0 104-74.5 178.5T480-80Zm0-80q71 0 120.5-49.5T650-330q0-46-17.5-91.5T580-516q-52-61-90.5-121.5T444-762q-47 70-109 133.5T202-536q23 75 80.5 125.5T418-356q13 1 21 10.5t5 22.5q-12 36-12 67.5t5 61.5q12 17 25 24.5t18-4.5q1-1 3-3.5t5-6.5q4-7 4-15.5t-3.5-15q-10.5-17-10.5-35.5t8-33.5q24-38 67-62.5t89-24.5q-19 52-51 98.5T492-230q-9 9-11 21t4 22q9 17 25.5 24.5T544-168q18-18 31.5-39.5T591-254q28 20 48.5 48.5T660-146q-41 33-91.5 49.5T480-160Z"/>
-                  </svg>
-                </div>
-                <h3 className="font-sora text-xl font-semibold text-[#0b1326] mb-2">Racha de Éxito</h3>
-                <p className="text-[#434656] text-sm">
-                  Gamificación diseñada para mantenerte motivado y convertir el estudio en un hábito.
-                </p>
-              </div>
+            <div className="bg-white border border-[#171f33]/10 shadow-sm p-8 rounded-xl group hover:border-[#7cb300]/40 hover:shadow-md transition-all duration-300">
+  <div className="w-12 h-12 bg-[#7cb300]/10 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      viewBox="0 -960 960 960" 
+      fill="currentColor" 
+      className="text-[#7cb300] w-[32px] h-[32px]"
+    >
+      <path d="M480-80q-106 0-192-56.5T151-290q-13-21-2-43.5t35-22.5q114-16 182.5-101.5T435-654q4-11 13-18.5t20-9.5q13-2 23.5 4.5T505-658q19 50 63 125t116 151q64 67 90 128t26 126q0 104-74.5 178.5T480-80Zm0-80q71 0 120.5-49.5T650-330q0-46-17.5-91.5T580-516q-52-61-90.5-121.5T444-762q-47 70-109 133.5T202-536q23 75 80.5 125.5T418-356q13 1 21 10.5t5 22.5q-12 36-12 67.5t5 61.5q12 17 25 24.5t18-4.5q1-1 3-3.5t5-6.5q4-7 4-15.5t-3.5-15q-10.5-17-10.5-35.5t8-33.5q24-38 67-62.5t89-24.5q-19 52-51 98.5T492-230q-9 9-11 21t4 22q9 17 25.5 24.5T544-168q18-18 31.5-39.5T591-254q28 20 48.5 48.5T660-146q-41 33-91.5 49.5T480-160Z"/>
+    </svg>
+  </div>
+  <h3 className="font-sora text-xl font-semibold text-[#0b1326] mb-2">Progreso Continuo</h3>
+  <p className="text-[#434656] text-sm">
+    Monitorea tu avance paso a paso y mantén la motivación mientras dominas nuevos conceptos.
+  </p>
+</div>
+
             </div>
           </div>
         </section>
@@ -220,7 +221,7 @@ export default function HomePage() {
                 <div className="w-16 h-16 rounded-full bg-[#2e5bff] text-white flex items-center justify-center font-sora text-2xl font-bold mb-4 shadow-[0_0_20px_rgba(46,91,255,0.3)]">
                   1
                 </div>
-                <h4 className="font-sora text-lg font-semibold mb-2 text-[#0b1326]">Elige tu ruta</h4>
+                <h4 className="font-sora text-lg font-semibold mb-2 text-[#0b1326]">Ruta JavaScript</h4>
                 <p className="text-[#434656] text-sm">Desde fundamentos de programación hasta desarrollo web avanzado.</p>
               </div>
               
@@ -238,8 +239,8 @@ export default function HomePage() {
                 <div className="w-16 h-16 rounded-full bg-[#7cb300] text-white flex items-center justify-center font-sora text-2xl font-bold mb-4 shadow-[0_0_20px_rgba(124,179,0,0.3)]">
                   3
                 </div>
-                <h4 className="font-sora text-lg font-semibold mb-2 text-[#0b1326]">Logros</h4>
-                <p className="text-[#434656] text-sm">Desbloquea certificados y medallas mientras construyes tu portafolio.</p>
+                <h4 className="font-sora text-lg font-semibold mb-2 text-[#0b1326]">Certificado</h4>
+                <p className="text-[#434656] text-sm">Desbloquea certificados mientras construyes tu portafolio.</p>
               </div>
             </div>
           </div>

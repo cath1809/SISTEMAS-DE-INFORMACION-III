@@ -15,6 +15,7 @@ enum Role {
 }
 
 model User {
+  certificates Certificate[]        // Relación con los certificados
   id         String               @id @default(uuid())
   name       String
   email      String               @unique
@@ -49,4 +50,15 @@ model ModuleProgress {
 
   // Esta regla evita que un usuario tenga dos progresos duplicados para el mismo módulo
   @@unique([userId, moduleId]) 
+}
+
+// NUEVO: Modelo para los certificados
+model Certificate {
+  id            String   @id @default(uuid())
+  certificateId String   @unique // Aquí guardaremos "NC-30546776"
+  studentName   String
+  issueDate     DateTime @default(now())
+
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

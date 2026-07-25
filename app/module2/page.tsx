@@ -152,14 +152,7 @@ export default function LessonTwo() {
             </span>
             <span className="text-[12px] leading-[16px] tracking-[0.1em] font-bold uppercase">Cursos</span>
           </Link>
-          <Link href="#" className="text-[#434656] flex items-center gap-[8px] px-[12px] py-[12px] hover:bg-[#2e5bff]/10 rounded-xl hover:text-[#2e5bff] transition-colors duration-200">
-            <span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </span>
-            <span className="text-[12px] leading-[16px] tracking-[0.1em] font-bold uppercase">Práctica</span>
-          </Link>
+         
         </div>
         
         <div className="p-[12px] border-t border-[#171f33]/10">
